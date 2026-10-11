@@ -1,5 +1,6 @@
 using mf_dev_backend_2026.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace mf_dev_backend_2026
 {
@@ -13,6 +14,13 @@ namespace mf_dev_backend_2026
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.AccessDeniedPath = "/Usuarios/AccessDenied/";
+                    options.LoginPath = "/Usuarios/Login/";
+                });
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,6 +39,8 @@ namespace mf_dev_backend_2026
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
